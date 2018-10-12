@@ -85,26 +85,19 @@ Crear service y route para Ejemplo
 http POST :8001/services name=ejemplo url=http://172.17.0.4
 
 http POST :8001/services/ejemplo/routes paths:='["/httpbin"]'
+http POST :8001/services/ejemplo/routes paths:='["/httpbin-two"]'
+
 
 http GET :8000/httpbin/get
 ```
 
-Agregar plugins rate-limiting a los consumers
+Agregar plugins rate-limiting a service y routes
 ---
 
 ```shell
-http POST :8001/consumers username=kong
-http POST :8001/consumers username=meetup
 
-http POST :8001/consumers/kong/key-auth key=kong
-
-http POST :8001/consumers/kong/key-auth key=meetup
-
-http POST :8001/services/ejemplo/plugins name=rate-limiting config.minute=5 consumer_id=
-http POST :8001/services/ejemplo/plugins name=rate-limiting config.minute=100 consumer_id=
-
-http GET :8000/httpbin/headers Apikey:kong101
-http GET :8000/httpbin/headers Apikey:kong
+http POST :8001/services/ejemplo/plugins name=rate-limiting config.minute=5 
+http POST :8001/routes/httpbin-two/plugins name=rate-limiting config.minute=10
 ```
 
 Agregar plugins API key
