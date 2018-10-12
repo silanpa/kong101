@@ -97,7 +97,7 @@ Agregar plugins rate-limiting a service y routes
 ```shell
 
 http POST :8001/services/ejemplo/plugins name=rate-limiting config.minute=5 
-http POST :8001/routes/httpbin-two/plugins name=rate-limiting config.minute=10
+http POST :8001/routes/id_route/plugins name=rate-limiting config.minute=10
 ```
 
 Agregar plugins API key
