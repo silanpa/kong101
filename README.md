@@ -1,20 +1,28 @@
-#Kong 101
+# Kong 101
 
->Comandos docker y http para Meetup Kong 101 *[Kong101](https://www.meetup.com/es-ES/Kong-SANTIAGO/events/254869963/)
+>Comandos docker y http para Meetup Kong 101 [Kong101](https://www.meetup.com/es-ES/Kong-SANTIAGO/events/254869963/)
 
-##Antes de comenzar
+## Antes de comenzar
 
-Son necesarias algunas herramientas antes de poder hacer el run de Kong con Docker, y las peticiones con HTTPie.
+Son necesarias algunas herramientas antes de comenzar con el Meetup de Kong.
 
 * [Docker](https://docs.docker.com/install/)
 * [HTTPie](https://httpie.org/doc)
 
-En el caso de no poder instalar Docker en tu maquina, puedes utilizar Play-With-Docker
+Instalar httpie
+---
+La forma mas fácil según la documentación es con lo siguiente:
 
-* [PlayWithDocker](https://labs.play-with-docker.com/)
-* Cuenta en [Docker Cloud](https://cloud.docker.com/)
+```shell
+pip install --upgrade httpie
+```
 
-Inicio Postgres
+En el caso de no poder instalar Docker en tu maquina, puedes utilizar play-with-docker. Pero los commandos estan enfocados a docker en Linux, cualquier duda consultar.
+
+* [Play with Docker](https://labs.play-with-docker.com/)
+* Cuenta en [Docker Cloud](https://cloud.docker.com/) necesaria para el login de play-with-docker
+
+Inicio DB Postgres
 ---
 
 ```shell
@@ -25,7 +33,7 @@ docker run -d --name kong-database \
   postgres:9.5
 ```
 
-Inicio Migracion
+Inicio Migracion DB
 ---
 
 ```shell
@@ -35,7 +43,7 @@ docker run --rm --link kong-database:kong-database \
   kong kong migrations up
 ```
 
-Init Kong
+Inicio Kong
 ---
 
 ```shell
@@ -55,22 +63,16 @@ docker run -d --name kong --link kong-database:kong-database \
   kong
 ```
 
-Instalar httpie
----
-
-```shell
-pip install --upgrade httpie
-```
-
 Probar Instalacion
 ---
 
 ```shell
-http --pretty=all GET :8001 | less
+http --pretty=all GET :8001
 ```
 
 Iniciar Backend de Ejemplo
 ---
+A simple HTTP Request & Response Service [Httpbin](https://httpbin.org/)
 
 ```shell
 docker run -d -p 80:80 kennethreitz/httpbin
@@ -91,11 +93,12 @@ Agregar plugins rate-limiting a los consumers
 ---
 
 ```shell
-http GET :8001/consumers/meetup
-
 http POST :8001/consumers username=kong
+http POST :8001/consumers username=meetup
 
 http POST :8001/consumers/kong/key-auth key=kong
+
+http POST :8001/consumers/kong/key-auth key=meetup
 
 http POST :8001/services/ejemplo/plugins name=rate-limiting config.minute=5 consumer_id=
 http POST :8001/services/ejemplo/plugins name=rate-limiting config.minute=100 consumer_id=
@@ -150,5 +153,4 @@ docker run -d --name kong-2 --link kong-database:kong-database \
   -p 8101:8001 \
   -p 8544:8444 \
   kong
-
 ```
