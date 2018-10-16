@@ -1,6 +1,6 @@
 # Kong 101
 
->Comandos docker y http para Meetup Kong 101 [Kong101](https://www.meetup.com/es-ES/Kong-SANTIAGO/events/254869963/)
+>Comandos docker y httpie para Meetup Kong 101 [Kong101](https://www.meetup.com/es-ES/Kong-SANTIAGO/events/254869963/)
 
 ## Antes de comenzar
 
