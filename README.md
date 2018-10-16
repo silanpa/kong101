@@ -78,26 +78,38 @@ A simple HTTP Request & Response Service [Httpbin](https://httpbin.org/)
 docker run -d -p 80:80 kennethreitz/httpbin
 ```
 
-Crear service y route para Ejemplo
+Crear services y routes para Ejemplo
 ---
 
 ```shell
 http POST :8001/services name=ejemplo url=http://172.17.0.4
-
 http POST :8001/services/ejemplo/routes paths:='["/httpbin"]'
-http POST :8001/services/ejemplo/routes paths:='["/httpbin-two"]'
-
-
 http GET :8000/httpbin/get
 ```
 
-Agregar plugins rate-limiting a service y routes
+Tambien se puede utilizar directamente desde el servicio en internet
+
+```shell
+http POST :8001/services name=ejemplo-dos url=https://httpbin.org/
+http POST :8001/services/ejemplo-dos/routes paths:='["/httpbin-dos"]'
+http GET :8000/httpbin-dos/get
+```
+
+Agregar plugins rate-limiting a services y routes
 ---
+Los plugins se pueden asociar a los servicios, routes y consumers.
 
 ```shell
 
 http POST :8001/services/ejemplo/plugins name=rate-limiting config.minute=5 
-http POST :8001/routes/id_route/plugins name=rate-limiting config.minute=10
+```
+Para router es necesario pasar el id asociado. Se puede obtener desde /routes o /services
+```shell
+
+http POST :8001/routes 
+http POST :8001/services/ejemplo/routes
+http POST :8001/services/ejemplo-dos/routes
+http POST :8001/routes/{id_route}/plugins name=rate-limiting config.minute=10
 ```
 
 Agregar plugins API key
@@ -112,24 +124,14 @@ http POST :8001/consumers/meetup/key-auth key=kong101
 
 http GET :8000/httpbin/headers Apikey:123456
 
-```
-
-Upstream y target
----
-
-```shell
-http POST :8001/upstreams name=cl.httpbin.service
-
-http POST :8001/consumers username=meetup
-
-http POST :8001/consumers/meetup/key-auth key=kong101
-
 http GET :8000/httpbin/headers Apikey:kong101
 
 ```
 
 Extras
 ---
+
+Agregar nuevo nodo de kong en diferentes puertos
 
 ```shell
 docker run -d --name kong-2 --link kong-database:kong-database \
