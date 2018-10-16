@@ -149,3 +149,21 @@ docker run -d --name kong-2 --link kong-database:kong-database \
   -p 8544:8444 \
   kong
 ```
+
+Issues conocidos (Notas)
+---
+
+La ip del servicio va a depender de cual ip asigne Docker, con un ambiente limpio en Linux la ip va a ser http://172.17.0.4.
+Para validar la ip se debe hacer un inspect al servicio.
+
+```shell
+docker ps
+docker inspect <id_container>
+```
+
+La ip del servicio se encuentra en NetworkSettings.Networks.ingress.IPAddress, se puede filtrar de la siguiente manera
+
+```shell
+docker inspect --format '{{ .NetworkSettings.Networks.ingress.IPAddress }}' <id_container>
+```
+
